@@ -3,99 +3,132 @@ SmartView
 
 The missing simplistic View logic from backbone.View. =)
 
+Adds template, convenience properties/methods and child hierarchy management without having to bother with the rendering.
+
 > Dependencies: Backbone, Handlebars
 
-## Usage
+Check the [example usage](https://github.com/benqus/smartview/tree/master/lib/app).
 
-```
-var ItemView = SimpleView.extend({
-    tagName: 'li',
-    className: 'Item',
-    
-    modelEvents: ['change'],
+## API - static methods
 
-    template: [
-        '<a href="{{ link }}" class="{{ color }}">',
-            '{{ text }}',
-            '<button>@</button>',
-        '</a>'
-    ],
+### SmartView#compile
 
-    events: {
-        'click button': 'onClick'
-    },
+Use this method to compile a template.
 
-    constructor: function () {
-        SmartView.apply(this, arguments);
-        this.selected = false;
-    },
+### SmartView#augment
 
-    toggleSelected: function () {
-        this.selected = !this.selected;
-        return this;
-    },
+Use this method to implement SmartView API on you `Backbone.View` class/instance.
 
-    onClick: function () {
-        this.toggleSelected()
-            .render({
-                color: this.selected ? 'red' : ''
-            });
-        return false;
-    }
-});
+## API - prototype methods
 
-var ListView = SmartView.extend({
-    tagName: 'ul',
-    className: 'ListView',
-    
-    modelEvents: ['reset'],
-    
-    template: [
-        '<nav>',
-            '<ul></ul>',
-        '</nav>'
-    ],
-    
-    mapping: {
-        '*': 'ul'
-    },
-    
-    build: function () {
-        this.collection.each(function (item) {
-            var view = new ItemView({
-                model: item
-            });
-            view.addTo(this, item.cid);
-        }, this);
-    }
-});
+### SmartView#build
 
+Add the child SmartView instances here
 
-var App = SmartView.extend({
-    template: [
-        '<header>',
-            '<h1>App</h1>',
-        '</header>',
-    ],
-    
-    build: function () {
-        var collection = new Backbone.Collection([
-            { link: '/a', text: 'a' },
-            { link: '/b', text: 'b' },
-            { link: '/c', text: 'c' }
-        ]);
+    SmartView.extend({
+        ...
+        build: function () {
+            new SmartView()
+                .addTo(this, 'child1')
+        }
+        ...
+    });
+
+### SmartView#template
+
+Either a string, an array of strings, or a function returning the previous types.
+
+Handlebars will auto-cache already existing templates so don't worry about using strings as templates.
+
+    SmartView.extend({
+        ...
+        template: '<ul></ul>',
+        ...
+    });
+
+## API - prototype properties
+
+### SmartView#template
+
+Either a string, an array of strings, or a function returning the previous types.
+
+    SmartView.extend({
+        ...
+        template: '<ul></ul>',
+        ...
+    });
+
+### SmartView#mapping
+
+A map (object) describing where to render the named children in the View's template.
+
+Use `*` to render everything in one 
+
+    SmartView.extend({
+        ...
+        template: '<div class="container"></div>',
         
-        new ListView({
-                collection: collection
-            })
-            .addTo(this, 'listView');
-    }
-});
+        mapping: {
+            'myChild': '.container'
+        },
+        
+        initialize: function () {
+            new SmartView()
+                .addTo(this, 'myChild');
+        },
+        ...
+    });
 
-// creating new app
-new App({
-        el: document.body
-    })
-    .render();
-```
+### SmartView#modelEvents
 
+Array of event names to listen to in order to re-render the SmartView instance.
+
+The callback will be the current SmartView#render method.
+
+    SmartView.extend({
+        ...
+        modelEvents: ['reset'],
+        ...
+    });
+
+## API - callback interface
+
+### SmartView#beforeRender
+
+Invoked right before re/rendering the View.
+
+Preventing the `render` can be done by returning `false` from this method.
+
+### SmartView#afterRender
+
+Invoked right after re/rendering the View.
+
+### SmartView#beforeDetach
+
+Invoked right before detaching (tearing the View#el out of DOM) the View.
+
+Preventing the `detach` can be done by returning `false` from this method.
+
+### SmartView#afterDetach
+
+Invoked right after detaching the View.
+
+### SmartView#beforeUpdate
+
+Invoked right before updating (View is detached but not yet attached) the View.
+
+Preventing the `update` can be done by returning `false` from this method.
+
+### SmartView#afterUpdate
+
+Invoked right after updating the View.
+
+### SmartView#beforeRemove
+
+Invoked right before remove (View is NOT yet detached) the View.
+
+Preventing the `remove` can be done by returning `false` from this method.
+
+### SmartView#afterRemove
+
+Invoked right after removing the View.
