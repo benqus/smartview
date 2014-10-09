@@ -1,0 +1,10 @@
+a,
+a:focus,
+a:active,
+a:visited {
+    color: black;
+}
+
+.red {
+    color: red;
+}
