@@ -1,10 +1,4 @@
-a,
-a:focus,
-a:active,
-a:visited {
-    color: black;
-}
-
-.red {
-    color: red;
+.TodoItem > .done {
+    text-decoration: line-through;
+    color: gray;
 }
