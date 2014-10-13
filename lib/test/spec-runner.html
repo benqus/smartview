@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
 
-</body>
+        <script src="../../node_modules/handlebars/dist/handlebars.js"></script>
+        <script src="../../node_modules/jquery/dist/jquery.js"></script>
+        <script src="../../node_modules/underscore/underscore.js"></script>
+        <script src="../../node_modules/backbone/backbone.js"></script>
+        <script src="../src/SmartView.js"></script>
+
+        <link rel="stylesheet" href="../../node_modules/grunt-mocha/node_modules/mocha/mocha.css" />
+        <script src="../../node_modules/grunt-mocha/node_modules/mocha/mocha.js"></script>
+        <script src="../../node_modules/chai/chai.js"></script>
+        <script>
+            mocha.setup('bdd');
+            window.onload = function () {
+                mocha.run();
+            };
+        </script>
+
+    </head>
+    <body>
+        <div id="fixture"></div>
+        <div id="mocha"></div>
+
+        <script src="spec/SmartView.spec.js"></script>
+    </body>
 </html>
